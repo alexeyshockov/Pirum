@@ -177,6 +177,24 @@ class Pirum_Builder
 
     $this->server = simplexml_load_file($targetDir.'/pirum.xml');
 
+    if (!$this->server) {
+      throw new InvalidArgumentException('Invalid pirum.xml.');
+    }
+
+    $emptyFields = array();
+    if (empty($this->server->name)) {
+      $emptyFields[] = 'name';
+    }
+    if (empty($this->server->summary)) {
+      $emptyFields[] = 'summary';
+    }
+    if (empty($this->server->url)) {
+      $emptyFields[] = 'url';
+    }
+    if (!empty($emptyFields)) {
+      throw new InvalidArgumentException('You must fill required tags in your pirum.xml: '.implode(', ', $emptyFields).'.');
+    }
+
     $this->formatter = $formatter;
     $this->targetDir = $targetDir;
     $this->buildDir  = sys_get_temp_dir().'/pirum_build_'.uniqid();
